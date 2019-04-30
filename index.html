@@ -1,77 +1,198 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-	<meta id="viewport" name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
-    <title>Manual_new</title>
-    <link rel="stylesheet" href="style/swiper.3.1.2.min.css" type="text/css">
-    <link rel="stylesheet" href="style/animate.min.css" type="text/css">
-    <link rel="stylesheet" href="style/reset2.css" type="text/css">
-    <link rel="stylesheet" href="style/common.css" type="text/css">
-    <script>
-        var view_timer = null;
-        function viewPort(d, c) {
-            var a = document.getElementById("viewport");
-            a && document.head.removeChild(a);
-            c || (c = 640);
-            a = parseInt(window.screen.width) / c;
-            if (/Android (\d+\.\d+)/.test(d)) {
-                var b = document.createElement("meta");
-                b.name = "viewport";
-                b.id = "viewport";
-                2.3 < parseFloat(RegExp.$1) ? b.content = "width=" + c + ", initial-scale = " + a + ",user-scalable=1, minimum-scale = " + a + ", maximum-scale = " + a + ", target-densitydpi=device-dpi" : b.content = '"width=' + c + ", target-densitydpi=device-dpi";
-            } else {
-                b = document.createElement("meta");
-                b.name = "viewport";
-                b.id = "viewport";
-                if ("-90" == window.orientation || "90" == window.orientation) a = window.screen.height / c;
-                b.content = "width=" + c + ", initial-scale = " + a + " ,minimum-scale = " + a + ", maximum-scale = " + a + ", user-scalable=no, target-densitydpi=device-dpi"
-            }
-            document.head.appendChild(b);
-        }
-        viewPort(navigator.userAgent);
-        window.onresize = function() {
-            clearTimeout(view_timer);
-            view_timer = setTimeout(function() {
-                viewPort(navigator.userAgent)
-            }, 500)
-        };
-    </script>
-</head>
-
-<body>
-    <div class="swiper-container gWidth">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide page1">
-            	<img src="img/logo.png" alt="logo" class="ani img1_1" data-slide-in="at 300 from bounceInDown use swing during 1000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/1_1.png" alt="1_1" class="ani img1_2" data-slide-in="at 1300 from flipInY use swing during 1000" data-slide-out="at 200 to wobble use swing during 1000 force">
-            	<img src="img/1_2.png" alt="1_1" class="ani img1_3" data-slide-in="at 2300 from rubberBand use swing during 1000">
-            </div>
-            <div class="swiper-slide page2">
-            	<img src="img/2_1.png" alt="2_1" class="img2_1 ani" data-slide-in="at 300 from bounceInDown use swing during 1000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_2.png" alt="2_2" class="img2_2 ani" data-slide-in="at 300 from bounceInDown use swing during 2000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_3.png" alt="2_3" class="img2_3 ani" data-slide-in="at 600 from bounceInDown use swing during 2000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_4.png" alt="2_4" class="img2_4 ani" data-slide-in="at 900 from bounceInDown use swing during 2000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_5.png" alt="2_5" class="img2_5 ani" data-slide-in="at 1200 from bounceInDown use swing during 2000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_6.png" alt="2_6" class="img2_6 ani" data-slide-in="at 1500 from bounceInDown use swing during 2000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            	<img src="img/2_7.png" alt="2_7" class="img2_7 ani" data-slide-in="at 1500 from bounceInDown use swing during 1000" data-slide-out="at 0 to rubberBand use swing during 1000 force">
-            </div>
-            <div class="swiper-slide page3">
-            	<img src="img/3_1bg.png" alt="3bg" class="img3_1">
-            </div>
-            <div class="swiper-slide page4">
-            	<div class="testBar"></div>
-            </div>
-        </div>
-    </div>
-    <script src="js/swiper.3.1.2.min.js"></script>
-    <script src="js/swiper.animate-twice.min.js"></script>
-    <script>
-        var mySwiper = new Swiper('.swiper-container', {
+	<head>
+		<meta charset="utf-8"/>
+		<meta id="viewport" name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+		<link type="text/css" rel="stylesheet" href="css/reset2.css">
+		<link type="text/css" rel="stylesheet" href="css/common.css">
+		<link type="text/css" rel="stylesheet" href="css/swiper.3.1.2.min.css">
+		<link type="text/css" rel="stylesheet" href="css/animate.min.css">
+		<script src="js/common.js"></script>
+		<title>微手册模板</title>
+		<script>
+	        //调用 viewPort(navigator.userAgent,设计图给的尺寸，不传为640)
+			var view_timer = null;
+			function viewPort(userAgent, pageWidth) {
+			    var oView = document.getElementById('viewport');
+			    //判断viewport是否存在，存在就移除掉（为onresize准备）
+			    if (oView) {
+			        document.head.removeChild(oView);
+			    }
+			    //设计尺寸的宽度，如果不给 默认为640
+			    if (!pageWidth) {
+			        pageWidth = 640;
+			    }
+			    var screen_w = parseInt(window.screen.width),
+			        scale = screen_w / pageWidth;
+			    if (/Android (\d+\.\d+)/.test(userAgent)) {
+			        var creat_meta = document.createElement('meta');
+			        creat_meta.name = 'viewport';
+			        creat_meta.id = 'viewport';
+			        var version = parseFloat(RegExp.$1);
+			        if (version > 2.3) {
+			            creat_meta.content = 'width=' + pageWidth + ', initial-scale = ' + scale + ',user-scalable=1, minimum-scale = ' + scale + ', maximum-scale = ' + scale + ', target-densitydpi=device-dpi';
+			        } else {
+			            creat_meta.content = '"width=' + pageWidth + ', target-densitydpi=device-dpi';
+			        }
+			        document.head.appendChild(creat_meta);
+			    } else {
+			        var creat_meta = document.createElement('meta');
+			        creat_meta.name = 'viewport';
+			        creat_meta.id = 'viewport';
+			        //检测横屏
+			        if(window.orientation=='-90' || window.orientation == '90'){
+			            //横屏的话用屏幕高度计算(iphone横屏下依然取出的是竖屏的宽度)
+			            scale = window.screen.height / pageWidth;
+			            creat_meta.content = 'width=' + pageWidth + ', initial-scale = ' + scale + ' ,minimum-scale = ' + scale + ', maximum-scale = ' + scale + ', user-scalable=no, target-densitydpi=device-dpi';
+			        }
+			        else{
+			            creat_meta.content = 'width=' + pageWidth + ', initial-scale = ' + scale + ' ,minimum-scale = ' + scale + ', maximum-scale = ' + scale + ', user-scalable=no, target-densitydpi=device-dpi';
+			        }
+			        document.head.appendChild(creat_meta);
+			    }
+			}
+			viewPort(navigator.userAgent);
+			window.onresize = function() {
+			    //添加定时器 解决大UC反应慢的问题、慢的问题、慢的问题（重要的事儿说三遍）!!!
+			    clearTimeout(view_timer);
+			    view_timer = setTimeout(function(){
+			        viewPort(navigator.userAgent);
+			    }, 500);
+			}
+	    </script>
+	</head>
+	<body>
+		<div class="swiper-container">
+	        <div class="swiper-wrapper">
+	        	<!--第一页-->
+	            <div class="swiper-slide page1">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/1bg.jpg" alt="1bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/1_1.png" alt="1_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/1_2.png" alt="1_2">
+	                </div>
+	            </div>
+	            <!--第二页-->
+	            <div class="swiper-slide page2">
+	            	<div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/2bg.jpg" alt="1bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/2_1.png"alt="2_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/2_2.png"alt="2_2">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay="2s">
+	                	<img src="img/2_3.png"alt="2_3">
+	                </div>
+	            </div>
+	            <!--第三页-->
+	            <div class="swiper-slide page3">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/3bg.jpg" alt="3bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/3_1.png" alt="3_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/3_2.png" alt="3_2">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="2s">
+	                	<img src="img/3_3.png" alt="3_3">
+	                </div>
+	            </div>
+	            <!--第四页-->
+	            <div class="swiper-slide page4">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/4bg.jpg" alt="4bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/4_1.png" alt="4_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/4_2.png" alt="4_2">
+	                </div>
+	            </div>
+	            <!--第五页-->
+	            <div class="swiper-slide page5">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/5bg.jpg" alt="5bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/5_1.png" alt="5_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/5_2.png" alt="5_2">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInUp" swiper-animate-duration="1s" swiper-animate-delay="2s">
+	                	<img src="img/5_3.png" alt="5_3">
+	                </div>
+	            </div>
+	            <!--第6页-->
+	            <div class="swiper-slide page6">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/6bg.jpg" alt="6bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/6_1.png" alt="6_1">
+	                </div>
+	            </div>
+	            <!--第7页-->
+	            <div class="swiper-slide page7">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/7bg.jpg" alt="7bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/7_1.png" alt="7_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="2s">
+	                	<img src="img/7_2.png" alt="7_2">
+	                </div>
+	            </div>
+	            <!--第8页-->
+	            <div class="swiper-slide page8">
+	            	<!--图片在这里-->
+	                <div class="p_img ani" swiper-animate-effect="fadeInDown" swiper-animate-duration="1s" swiper-animate-delay=".5s">
+	                	<img src="img/8bg.jpg" alt="8bg">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1s">
+	                	<img src="img/8_1.png" alt="8_1">
+	                </div>
+	                <div class="p_img ani" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="1.5s">
+	                	<img src="img/8_2.png" alt="8_2">
+	                </div>
+	            </div>
+	        </div>
+	        <!--音频图标-->
+	        <div class="music music-on" id="musicBtn"></div>
+	        <!--提示滑动箭头-->
+	        <div class="arrow" swiper-animate-style-cache="visibility: hidden;"></div>
+	        <!--在这里添加音频-->
+	        <audio id="music" src="music/The Rain.mp3"" autoplay loop ></audio>
+	    </div>
+	</body>
+	<script src="js/swiper.3.1.2.min.js"></script>
+	<script src="js/swiper.animate1.0.2.min.js"></script>
+	<script>
+		//swiper控件核心，勿动！
+		var mySwiper = new Swiper('.swiper-container', {
             direction: 'vertical',
+            loop: true,
+            //autoplay: 1000,
             autoplayDisableOnInteraction:false,
             onInit: function(swiper) { //Swiper2.x的初始化是onFirstInit
+            	//alert(1);
                 swiperAnimateCache(swiper); //隐藏动画元素 
                 swiperAnimate(swiper); //初始化完成开始动画
             },
@@ -79,6 +200,17 @@
                 swiperAnimate(swiper); //每个slide切换结束时也运行当前slide动画
             }
         })
-    </script>
-</body>
+		//控制音频 暂停和播放
+		var oMusic=document.getElementById('musicBtn');
+		var oMusicAudio=document.getElementById('music');
+		oMusic.onclick=function(){
+			if(oMusic.className=='music music-off'){
+				oMusic.className='music music-on';
+				oMusicAudio.play();
+			}else{
+				oMusic.className='music music-off';
+				oMusicAudio.pause();
+			}
+		}
+	</script>
 </html>
